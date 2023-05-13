@@ -59,7 +59,7 @@ Uploaders: Iain Buclaw <ibuclaw@ubuntu.com>, Matthias Klose <doko@debian.org>
 ', `dnl
 Uploaders: Matthias Klose <doko@debian.org>
 ')dnl SRCNAME
-Standards-Version: 4.6.0
+Standards-Version: 4.6.2
 ifdef(`TARGET',`dnl cross
 Build-Depends: DEBHELPER_BUILD_DEP DPKG_BUILD_DEP
   LIBC_BUILD_DEP, LIBC_BIARCH_BUILD_DEP
@@ -97,8 +97,8 @@ Homepage: http://gdcproject.org/
 ', `dnl
 Homepage: http://gcc.gnu.org/
 ')dnl SRCNAME
-Vcs-Browser: https://salsa.debian.org/toolchain-team/gcc
-Vcs-Git: https://salsa.debian.org/toolchain-team/gcc.git
+Vcs-Browser: https://salsa.debian.org/toolchain-team/gcc/tree/gcc-12-debian
+Vcs-Git: https://salsa.debian.org/toolchain-team/gcc.git -b gcc-12-debian
 XS-Testsuite: autopkgtest
 
 ifelse(regexp(SRCNAME, `gcc-snapshot'),0,`dnl
@@ -1109,7 +1109,7 @@ ifdef(`TARGET',`Multi-Arch: foreign
 Section: ifdef(`TARGET',`devel',`interpreters')
 Priority: optional
 Depends: BASEDEP, ${shlibs:Depends}, ${misc:Depends}
-Suggests: gcc`'PV-locales (>= ${gcc:SoftVersion})
+Suggests: gcc`'PV-locales (>= ${gcc:SoftVersion}), cpp`'PV-doc (>= ${gcc:SoftVersion})
 Breaks: libmagics++-dev (<< 2.28.0-4)ifdef(`TARGET',`',`, hardening-wrapper (<< 2.8+nmu3)')
 BUILT_USING`'dnl
 Description: GNU C preprocessor
@@ -3263,7 +3263,8 @@ ifdef(`MULTIARCH', `Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 ')`'dnl
 Priority: optional
-Depends: BASEDEP, libgcc`'PV-dev, binutils, ${shlibs:Depends}, ${misc:Depends}
+Depends: BASEDEP, libgcc`'PV-dev, binutils, ${dep:libcdev},
+  ${shlibs:Depends}, ${misc:Depends}
 Breaks: python-gccjit (<< 0.4-4), python3-gccjit (<< 0.4-4)
 BUILT_USING`'dnl
 Description: GCC just-in-time compilation (shared library)
@@ -3360,7 +3361,6 @@ Priority: optional
 Depends: BASEDEP, gcc`'PV`'TS (= ${gcc:Version}), ${dep:libcdev}, ${shlibs:Depends}, libidevdep(objc`'PV-dev,,=), ${misc:Depends}
 Suggests: ${gobjc:multilib}, gcc`'PV-doc (>= ${gcc:SoftVersion}), libdbgdep(objc`'OBJC_SO-dbg),
 Provides: objc-compiler`'TS
-ifdef(`__sparc__',`Conflicts: gcc`'PV-sparc64', `dnl')
 BUILT_USING`'dnl
 Description: GNU Objective-C compiler
  This is the GNU Objective-C compiler, which compiles
@@ -4868,9 +4868,6 @@ ifdef(`MULTIARCH', `Pre-Depends: ${misc:Pre-Depends}
 ')`'dnl
 Depends: BASEDEP, gcc`'PV`'TS (>= ${gcc:SoftVersion}), ${dep:libgnat}, ${dep:libcdev}, ${shlibs:Depends}, ${misc:Depends}
 Suggests: gnat`'PV-doc, ada-reference-manual-2012, gnat`'-GNAT_V-sjlj
-Breaks: gnat-4.9-base (= 4.9-20140330-1)
-Replaces: gnat-4.9-base (= 4.9-20140330-1)
-# gnat-base 4.9-20140330-1 contains debian_packaging.mk by mistake.
 Conflicts: gnat-4.9, gnat-5`'TS, gnat-6`'TS, gnat-7`'TS, gnat-8`'TS, gnat-9`'TS,
  gnat-10`'TS, gnat-11`'TS,
 # Previous versions conflict for (at least) /usr/bin/gnatmake.
@@ -5616,6 +5613,16 @@ Description: GNU Modula-2 standard library (debug symbols)
 ')`'dnl armml
 ')`'dnl multigm2lib
 ')`'dnl libgm2
+
+Package: gm2`'PV-doc
+Architecture: all
+Section: doc
+Depends: gcc`'PV-base (>= ${gcc:SoftVersion}), ${misc:Depends}
+Suggests: gm2`'PV
+Conflicts: gm2-12 (<< 12.2.0-8)
+Replaces: gm2-12 (<< 12.2.0-8)
+Description: Documentation for the GNU Modula-2 compiler (gm2)
+ Documentation for the GNU Modula-2 compiler in HTML and info `format'.
 ')`'dnl m2
 
 ifdef(`TARGET',`',`dnl

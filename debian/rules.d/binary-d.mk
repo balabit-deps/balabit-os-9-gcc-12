@@ -128,7 +128,7 @@ endif
 #endif
 
 	dh_link -p$(p_gdc) \
-		/$(docdir)/$(p_gcc)/README.Bugs \
+		/$(docdir)/$(p_xbase)/README.Bugs \
 		/$(docdir)/$(p_gdc)/README.Bugs
 
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTONS)))

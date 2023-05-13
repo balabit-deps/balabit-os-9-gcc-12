@@ -518,9 +518,9 @@ endif
 
 # allows to wrote backtraces for ICEs
 #unstripped_exe = yes
-ifneq (,$(filter $(DEB_TARGET_ARCH), amd64 armel armhf arm64 mipsel mips64el ppc64el s390x))
-  unstripped_exe = yes
-endif
+#ifneq (,$(filter $(DEB_TARGET_ARCH), amd64 armel armhf arm64 mipsel mips64el ppc64el s390x))
+#  unstripped_exe = yes
+#endif
 
 # common things ---------------
 # build common packages, where package names don't differ in different
@@ -728,7 +728,7 @@ with_jit = yes
 
 # FIXME: compiler bug
 # m68k: PR 95381
-jit_no_cpus	:= ia64 m68k
+jit_no_cpus	:= ia64
 
 ifneq (,$(filter $(DEB_TARGET_ARCH_CPU),$(jit_no_cpus)))
   with_jit := disabled for cpu $(DEB_TARGET_ARCH_CPU)
@@ -848,6 +848,7 @@ endif
 ifeq (,$(filter $(DEB_STAGE),stage1 stage2))
 # Ada --------------------
 ada_no_cpus	:= m32r sh3 sh3eb sh4eb
+ada_no_cpus	+= arc
 ada_no_cpus	+= ia64
 ada_no_systems	:= 
 ada_no_cross	:= no
@@ -877,7 +878,7 @@ endif
 ifneq (,$(filter $(DEB_TARGET_ARCH),x32))
   # link error with glibc << 2.35, dladdr not found
   ifneq (,$(filter $(distrelease), buster bullseye bookworm sid precise trusty xenial bionic focal impish))
-    with_ada := disabled for architecture $(DEB_TARGET_ARCH)
+    #with_ada := disabled for architecture $(DEB_TARGET_ARCH)
   endif
 endif
 ifeq ($(ada_no_cross)-$(DEB_CROSS),yes-yes)
@@ -1011,7 +1012,7 @@ ifneq (,$(findstring gccgo, $(PKGSOURCE)))
   with_libcc1 :=
 endif
 
-go_no_cpus := avr hppa
+go_no_cpus := arc avr hppa
 go_no_cpus += m68k # See PR 79281 / PR 83314
 go_no_systems := kfreebsd
 ifneq (,$(filter $(distrelease),precise))
@@ -1069,7 +1070,7 @@ endif
 # D ---------------------------
 d_no_cross := yes
 d_no_snap :=
-d_no_cpus := alpha ia64 m68k sh4 s390 sparc64
+d_no_cpus := alpha arc ia64 m68k sh4 s390 sparc64
 d_no_systems := gnu kfreebsd-gnu
 
 ifneq ($(single_package),yes)
@@ -1288,9 +1289,9 @@ ifeq ($(with_m2),yes)
   ifeq ($(with_dev),yes)
     with_m2dev := yes
   endif
-  ifeq ($(with_common_libs),yes)
+  #ifeq ($(with_common_libs),yes)
     with_libgm2 := yes
-  endif
+  #endif
   enabled_languages += m2
 endif
 
@@ -1630,7 +1631,6 @@ else
   with_hppa64 := $(call envfilt, hppa64, , , $(with_hppa64))
 
   ifeq ($(DEB_STAGE),rtlibs)
-    with_libatomic := disabled for rtlibs stage
     with_libasan := disabled for rtlibs stage
     with_liblsan := disabled for rtlibs stage
     with_libtsan := disabled for rtlibs stage
@@ -1688,7 +1688,7 @@ endif
 ifeq ($(distribution)-$(DEB_HOST_ARCH),Ubuntu-riscv64)
   with_check := disabled for $(DEB_HOST_ARCH) on Ubuntu, qemu builders
 endif
-with_check := disabled for this upload
+#with_check := disabled for this upload
 
 # not a dependency on all archs, but if available, use it for the testsuite
 ifneq (,$(wildcard /usr/bin/localedef))

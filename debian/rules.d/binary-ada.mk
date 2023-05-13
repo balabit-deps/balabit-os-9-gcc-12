@@ -209,11 +209,6 @@ else
 	done
 endif
 
-ifneq (,$(filter $(build_type), build-native cross-build-native))
-	dh_install -p$(p_gnat) debian/ada/debian_packaging.mk usr/share/ada
-	mv $(d_gnat)/usr/share/ada/debian_packaging.mk \
-	    $(d_gnat)/usr/share/ada/debian_packaging-$(GNAT_VERSION).mk
-endif
 	: # keep this one unversioned, see Debian #802838.
 	dh_link -p$(p_gnat) \
 		usr/bin/$(cmd_prefix)gcc$(pkg_ver) usr/bin/$(cmd_prefix)gnatgcc

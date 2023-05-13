@@ -125,7 +125,8 @@ ifneq (,$(filter $(build_type),cross-build-native cross-build-cross))
 	GFORTRAN_FOR_TARGET=$(DEB_TARGET_GNU_TYPE)-gfortran-$(BASE_VERSION) \
 	GOC_FOR_TARGET=$(DEB_TARGET_GNU_TYPE)-gccgo-$(BASE_VERSION) \
 	GNAT_FOR_TARGET=$(DEB_TARGET_GNU_TYPE)-gnat-$(BASE_VERSION) \
-	GDC_FOR_TARGET=$(DEB_TARGET_GNU_TYPE)-gdc-$(BASE_VERSION)
+	GDC_FOR_TARGET=$(DEB_TARGET_GNU_TYPE)-gdc-$(BASE_VERSION) \
+	GM2_FOR_TARGET=$(DEB_TARGET_GNU_TYPE)-gm2-$(BASE_VERSION)
 endif
 
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_TARGET_GNU_TYPE))
@@ -464,6 +465,10 @@ ifneq (,$(findstring softfloat,$(DEB_TARGET_GNU_CPU)))
   CONFARGS += --with-float=soft
 endif
 
+ifneq (,$(findstring arc-linux,$(DEB_TARGET_GNU_TYPE)))
+  CONFARGS += --disable-multilib
+endif
+
 ifneq (,$(findstring arm-vfp,$(DEB_TARGET_GNU_CPU)))
   CONFARGS += --with-fpu=vfp
 endif
@@ -563,8 +568,10 @@ ifneq (,$(findstring s390x-linux,$(DEB_TARGET_GNU_TYPE)))
   ifeq ($(derivative),Ubuntu)
     ifneq (,$(filter $(distrelease),xenial bionic focal))
       CONFARGS += --with-arch=zEC12
-    else
+    else ifneq (,$(filter $(distrelease),jammy kinetic))
       CONFARGS += --with-arch=z13 --with-tune=z15
+    else
+      CONFARGS += --with-arch=z13 --with-tune=z16
     endif
   else # Debian
     CONFARGS += --with-arch=z196
@@ -1814,6 +1821,12 @@ endif
 ifeq ($(with_go),yes)
   MANUALS += $(srcdir)/gcc/go/gccgo.texi
 endif
+ifeq ($(with_d),yes)
+  MANUALS += $(srcdir)/gcc/d/gdc.texi
+endif
+ifeq ($(with_m2),yes)
+  MANUALS += $(srcdir)/gcc/doc/gm2.texi
+endif
 
 html-docs: $(build_html_stamp)
 #$(build_html_stamp): $(stampdir)/05-build-html-split
@@ -1833,6 +1846,7 @@ $(stampdir)/05-build-html-split: $(build_stamp)
 		-I $(srcdir)/gcc/p/doc \
 		-I $(srcdir)/gcc/p/doc/generated \
 		-I $(builddir)/gcc \
+		-I $(builddir)/gcc/m2 \
 		-I $(buildlibdir)/libquadmath \
 		-o $${outname} \
 		{}'
@@ -1851,6 +1865,7 @@ $(stampdir)/05-build-html-nosplit: $(build_stamp)
 		-I $(srcdir)/gcc/p/doc \
 		-I $(srcdir)/gcc/p/doc/generated \
 		-I $(builddir)/gcc \
+		-I $(builddir)/gcc/m2 \
 		-I $(buildlibdir)/libquadmath \
 		-o $(CURDIR)/html/$${outname} \
 		{}'
@@ -1954,6 +1969,9 @@ ifeq ($(with_ada),yes)
 		$(builddir)/gcc/testsuite/g++.log \
 		&
 endif
+
+	: # FIXME: https://gcc.gnu.org/PR103944
+	rm -f $(srcdir)/libphobos/testsuite/libphobos.gc/forkgc2.d
 
 	-$(ULIMIT_M); \
 	    set +e; \
