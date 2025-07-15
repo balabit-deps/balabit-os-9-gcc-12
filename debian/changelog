@@ -1,3 +1,19 @@
+gcc-12 (12.3.0-1ubuntu1~22.04.2) jammy-security; urgency=medium
+
+  * SECURITY UPDATE: A missed hardening option in -fstack-protector for AArch64
+    can lead to buffer overflows for dynamically allocated local variables 
+    not being detected. (LP: #2054343)
+    - d/p/CVE-2023-4039.diff: Address stack protector and stack clash
+      protection weaknesses on AArch64. Taken from the gcc-12 branch. 
+    - CVE-2023-4039
+  * Move allocator base to avoid conflict with high-entropy ASLR for x86-64
+    Linux. Patch taken from LLVM. Fixes ftbfs. (LP: #2107313)
+    - d/p/lp2107313-asan-allocator-base.diff
+  * aarch64: Fix loose ldpstp check. (LP: #2116909)
+    - d/p/lp2116909-aarch64-fix-loose-ldpstp-check.diff
+
+ -- Gerald Yang <gerald.yang@canonical.com>  Tue, 15 Jul 2025 03:45:40 +0000
+
 gcc-12 (12.3.0-1ubuntu1~22.04) jammy-proposed; urgency=medium
 
   * SRU: LP: #1995499: Backport GCC 12.3.0 to Ubuntu 22.04 LTS.

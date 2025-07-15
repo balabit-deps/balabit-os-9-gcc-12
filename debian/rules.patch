@@ -66,6 +66,9 @@ debian_patches += \
 	libstdc++-hurd \
 	pr107475 \
 	pr93371 \
+	CVE-2023-4039 \
+	lp2107313-asan-allocator-base \
+	lp2116909-aarch64-fix-loose-ldpstp-check \
 
 ifneq (,$(filter $(distrelease),precise xenial bionic focal groovy hirsute))
   debian_patches += pr100067-revert
