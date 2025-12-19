@@ -1,3 +1,10 @@
+gcc-12 (12.3.0-1ubuntu1~22.04.3) jammy; urgency=medium
+
+  * d/p/pr118976.diff: Fix memory corruption when executing 256-bit
+    Scalable Vector Extensions code on 128-bit CPUs (LP: #2101084).
+
+ -- Vladimir Petko <vladimir.petko@canonical.com>  Sat, 20 Dec 2025 10:52:06 +1300
+
 gcc-12 (12.3.0-1ubuntu1~22.04.2) jammy-security; urgency=medium
 
   * SECURITY UPDATE: A missed hardening option in -fstack-protector for AArch64
